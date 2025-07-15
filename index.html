@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>龙鼎YIYA足球俱乐部</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+            min-height: 100vh;
+        }
+        
+        .mobile-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: #16a34a;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1f2937;
+        }
+        
+        .player-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .player-info {
+            text-align: center;
+        }
+        
+        .player-photo {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .player-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1f2937;
+        }
+        
+        .player-meta {
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .level-初级 {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .level-中级 {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .level-高级 {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-item.goals {
+            background: #f0fdf4;
+        }
+        
+        .stat-item.assists {
+            background: #eff6ff;
+        }
+        
+        .stat-item.matches {
+            background: #faf5ff;
+        }
+        
+        .stat-number {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .stat-item.goals .stat-number {
+            color: #16a34a;
+        }
+        
+        .stat-item.assists .stat-number {
+            color: #2563eb;
+        }
+        
+        .stat-item.matches .stat-number {
+            color: #7c3aed;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .view-details {
+            color: #2563eb;
+            font-size: 14px;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+        
+        .nav-btn.active {
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .match-card, .training-card, .about-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .match-title {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-主场 {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-客场 {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-即将开始 {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .detail-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 14px;
+        }
+        
+        .training-header {
+            border-left: 4px solid #3b82f6;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .training-type {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .training-level {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .about-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        
+        .mission-text {
+            color: #374151;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #374151;
+        }
+        
+        .feature-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        
+        .contact-icon {
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 480px) {
+            .mobile-container {
+                max-width: 100%;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="header">
+            <div>龙鼎YIYA足球俱乐部</div>
+        </div>
+
+        <!-- 球员页面 -->
+        <div id="players-page" class="content">
+            <h1 class="page-title">俱乐部球员</h1>
+            <div id="players-list"></div>
+        </div>
+
+        <!-- 比赛页面 -->
+        <div id="matches-page" class="content hidden">
+            <h1 class="page-title">比赛赛程</h1>
+            <div id="matches-list"></div>
+        </div>
+
+        <!-- 训练页面 -->
+        <div id="training-page" class="content hidden">
+            <h1 class="page-title">训练安排</h1>
+            <div id="training-list"></div>
+        </div>
+
+        <!-- 关于页面 -->
+        <div id="about-page" class="content hidden">
+            <h1 class="page-title">关于我们</h1>
+            <div class="about-section">
+                <h3 class="section-title">我们的使命</h3>
+                <p class="mission-text">
+                    龙鼎YIYA足球俱乐部致力于培养年轻足球人才，通过专业的训练和科学的方法，
+                    帮助小球员们提高技术水平，培养团队合作精神，享受足球带来的快乐。
+                </p>
+            </div>
+
+            <div class="about-card">
+                <h3 class="section-title">训练特色</h3>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-dot" style="background: #22c55e;"></div>
+                        专业教练团队指导
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-dot" style="background: #3b82f6;"></div>
+                        分级训练，因材施教
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-dot" style="background: #8b5cf6;"></div>
+                        注重基础技术培养
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-dot" style="background: #f97316;"></div>
+                        培养团队合作精神
+                    </li>
+                </ul>
+            </div>
+
+            <div class="about-card">
+                <h3 class="section-title">联系我们</h3>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <span><strong>地址:</strong> 龙鼎体育中心足球场</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span><strong>电话:</strong> 138-xxxx-xxxx</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span><strong>邮箱:</strong> info@longdingyiya.com</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="navigation">
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showPage('players')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">球员</span>
+                </button>
+                <button class="nav-btn" onclick="showPage('matches')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">赛程</span>
+                </button>
+                <button class="nav-btn" onclick="showPage('training')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">训练</span>
+                </button>
+                <button class="nav-btn" onclick="showPage('about')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">关于</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 数据
+        const players = [
+            {
+                id: 1,
+                name: '张小明',
+                age: 12,
+                bestPosition: '右边锋',
+                level: '初级',
+                photo: '👦',
+                stats: { goals: 15, assists: 8, matches: 22 }
+            },
+            {
+                id: 2,
+                name: '李小红',
+                age: 13,
+                bestPosition: '攻击型中场',
+                level: '中级',
+                photo: '👧',
+                stats: { goals: 8, assists: 12, matches: 25 }
+            },
+            {
+                id: 3,
+                name: '王小强',
+                age: 11,
+                bestPosition: '中后卫',
+                level: '初级',
+                photo: '👦',
+                stats: { goals: 2, assists: 3, matches: 20 }
+            }
+        ];
+
+        const matches = [
+            {
+                id: 1,
+                date: '2025-07-22',
+                time: '10:00',
+                opponent: '青龙足球俱乐部',
+                location: '市体育中心',
+                type: '友谊赛',
+                status: '即将开始'
+            },
+            {
+                id: 2,
+                date: '2025-07-28',
+                time: '14:30',
+                opponent: '飞鹰足球俱乐部',
+                location: '龙鼎足球场',
+                type: '联赛',
+                status: '主场'
+            },
+            {
+                id: 3,
+                date: '2025-08-05',
+                time: '16:00',
+                opponent: '雄狮足球俱乐部',
+                location: '区体育馆',
+                type: '杯赛',
+                status: '客场'
+            }
+        ];
+
+        const trainings = [
+            {
+                id: 1,
+                date: '2025-07-16',
+                time: '16:00-18:00',
+                type: '基础训练',
+                location: '龙鼎足球场A区',
+                coach: '张教练',
+                level: '初级组'
+            },
+            {
+                id: 2,
+                date: '2025-07-18',
+                time: '14:00-16:00',
+                type: '技术训练',
+                location: '龙鼎足球场B区',
+                coach: '李教练',
+                level: '中级组'
+            },
+            {
+                id: 3,
+                date: '2025-07-20',
+                time: '09:00-11:00',
+                type: '体能训练',
+                location: '龙鼎足球场A区',
+                coach: '王教练',
+                level: '高级组'
+            }
+        ];
+
+        // 渲染球员列表
+        function renderPlayers() {
+            const container = document.getElementById('players-list');
+            container.innerHTML = players.map(player => `
+                <div class="player-card">
+                    <div class="player-info">
+                        <span class="player-photo">${player.photo}</span>
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-meta">${player.age}岁 • ${player.bestPosition}</div>
+                        <span class="level-badge level-${player.level}">${player.level}</span>
+                        <div class="stats">
+                            <div class="stat-item goals">
+                                <span class="stat-number">${player.stats.goals}</span>
+                                <span class="stat-label">进球</span>
+                            </div>
+                            <div class="stat-item assists">
+                                <span class="stat-number">${player.stats.assists}</span>
+                                <span class="stat-label">助攻</span>
+                            </div>
+                            <div class="stat-item matches">
+                                <span class="stat-number">${player.stats.matches}</span>
+                                <span class="stat-label">出场</span>
+                            </div>
+                        </div>
+                        <div class="view-details">点击查看详细信息 →</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染比赛列表
+        function renderMatches() {
+            const container = document.getElementById('matches-list');
+            container.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <div class="match-header">
+                        <div class="match-title">龙鼎YIYA vs ${match.opponent}</div>
+                        <span class="status-badge status-${match.status}">${match.status}</span>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">比赛日期</span>
+                            <span class="detail-value">${match.date}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">比赛时间</span>
+                            <span class="detail-value">${match.time}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">比赛地点</span>
+                            <span class="detail-value">${match.location}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">比赛类型</span>
+                            <span class="detail-value">${match.type}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染训练列表
+        function renderTrainings() {
+            const container = document.getElementById('training-list');
+            container.innerHTML = trainings.map(training => `
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-type">${training.type}</div>
+                        <span class="training-level">${training.level}</span>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">训练日期</span>
+                            <span class="detail-value">${training.date}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">训练时间</span>
+                            <span class="detail-value">${training.time}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">训练地点</span>
+                            <span class="detail-value">${training.location}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">指导教练</span>
+                            <span class="detail-value">${training.coach}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示页面
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('[id$="-page"]').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // 显示选中页面
+            document.getElementById(pageName + '-page').classList.remove('hidden');
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.nav-btn').classList.add('active');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPlayers();
+            renderMatches();
+            renderTrainings();
+        });
+    </script>
+</body>
+</html>
